@@ -2,7 +2,10 @@ import {test} from "@playwright/test";
 import { HomePage } from "../pages/homePage";
 import { SignIn } from "../pages/signIn";
 import { Header } from "../pages/header";
-import { SignUp } from "../pages/signUp"
+import { SignUp } from "../pages/signUp";
+import userData from "../tests/data/userData.json";
+//import { getRandomEmail, getRandomName } from "../tests/data/randomFunction";
+import { getRandomEmail, getRandomName } from "../tests/data/faker";
 
 test.describe('Check Sign In page', () => {
     let homePage: HomePage;
@@ -22,14 +25,19 @@ test.describe('Check Sign In page', () => {
     })
 
     test('Check Sign Up with valid data', async () => {
+        const name = getRandomName();
+        const email = getRandomEmail();
+        const user = userData.validUser;
         await signUp.verifyNameField();
-        await signUp.fillNameField('Random Name');
+        await signUp.fillNameField(name);
+        console.log(name);
         await signUp.verifyEmailField();
-        await signUp.fillEmailField('random9@email.com');
+        await signUp.fillEmailField(email);
+        console.log(email);
         await signUp.verifyPasswordField();
-        await signUp.fillPasswordField('QQQqqq!!!111');
+        await signUp.fillPasswordField(user.password);
         await signUp.verifyRepeatPasswordField();
-        await signUp.fillRepeatPasswordField('QQQqqq!!!111');
+        await signUp.fillRepeatPasswordField(user.password);
         await signUp.verifyTermsConditionsCheckbox();
         await signUp.checkTermsConditionsCheckbox();
         await signUp.verifyNewsletterCheckbox();
@@ -46,29 +54,32 @@ test.describe('Check Sign In page', () => {
     })
 
     test('Check Sign Up with dupe email', async () => {
-        await signUp.fillNameField('Random Name');
-        await signUp.fillEmailField('random@email.com');
-        await signUp.fillPasswordField('QQQqqq!!!111');
-        await signUp.fillRepeatPasswordField('QQQqqq!!!111');
+        const dublicateUser = userData.dublicateUser;
+        await signUp.fillNameField(dublicateUser.name);
+        await signUp.fillEmailField(dublicateUser.email);
+        await signUp.fillPasswordField(dublicateUser.password);
+        await signUp.fillRepeatPasswordField(dublicateUser.password);
         await signUp.checkTermsConditionsCheckbox();
         await signUp.clickOnSignUpButton();
         await signUp.verifyDupeEmail();
     })
 
     test('Check Sign Up with incorrect confirmation password', async () => {
-        await signUp.fillNameField('Random Name');
-        await signUp.fillEmailField('random7@email.com');
-        await signUp.fillPasswordField('QQQqqq!!!111');
-        await signUp.fillRepeatPasswordField('QQQqqq!!!222');
+        const invalidRepeatPassword = userData.invalidUser;
+        await signUp.fillNameField(invalidRepeatPassword.name);
+        await signUp.fillEmailField(invalidRepeatPassword.email);
+        await signUp.fillPasswordField(invalidRepeatPassword.password);
+        await signUp.fillRepeatPasswordField(invalidRepeatPassword.repeatPassword);
         await signUp.checkTermsConditionsCheckbox();
         await signUp.clickOnSignUpButton();
         await signUp.verifyIncorrectOrEmptyRepeatPassword();
     })
 
     test('Check Sign Up with empty confirmation password', async () => {
-        await signUp.fillNameField('Random Name');
-        await signUp.fillEmailField('random7@email.com');
-        await signUp.fillPasswordField('QQQqqq!!!111');
+        const emptyRepeatPassword = userData.invalidUser;
+        await signUp.fillNameField(emptyRepeatPassword.name);
+        await signUp.fillEmailField(emptyRepeatPassword.email);
+        await signUp.fillPasswordField(emptyRepeatPassword.password);
         await signUp.checkTermsConditionsCheckbox();
         await signUp.clickOnSignUpButton();
         await signUp.verifyIncorrectOrEmptyRepeatPassword();

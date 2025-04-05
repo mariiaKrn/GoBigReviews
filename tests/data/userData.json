@@ -1,0 +1,20 @@
+{
+    "validUser": {
+        "name": "standard_user",
+        "password": "QQQqqq!!!111",
+        "email": "randomuseremail@mail.com"
+    },
+
+    "dublicateUser": {
+        "name": "standard_user",
+        "password": "QQQqqq!!!111",
+        "email": "randomuseremail@mail.com"
+    },
+
+    "invalidUser": {
+        "name": "standard_user",
+        "password": "QQQqqq!!!111",
+        "email": "randomuseremail2@mail.com",
+        "repeatPassword": "QQQqqq!!!222"
+    }
+}
