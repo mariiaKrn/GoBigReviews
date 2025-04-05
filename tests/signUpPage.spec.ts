@@ -6,6 +6,8 @@ import { SignUp } from "../pages/signUp";
 import userData from "../tests/data/userData.json";
 //import { getRandomEmail, getRandomName } from "../tests/data/randomFunction";
 import { getRandomEmail, getRandomName } from "../tests/data/faker";
+//import {allure} from 'allure-playwright';
+import { allureId } from 'allure-js-commons';
 
 test.describe('Check Sign In page', () => {
     let homePage: HomePage;
@@ -25,9 +27,20 @@ test.describe('Check Sign In page', () => {
     })
 
     test('Check Sign Up with valid data', async () => {
+        allureId.label('feature', 'Sign Up');
+        allureId.label('epic', 'Authentication');
+        allureId.label('story', 'User registers with valid credentials');
+        allureId.label('severity', 'critical');
+        allureId.label('tag', 'regression');
+        allureId.label('tag', 'smoke');
+        allureId.owner('Maria');
+        allureId.label('testId', 'TS001');
+        allureId.issue('AUTH-123', 'Sign Up fails on special symbols');
         const name = getRandomName();
         const email = getRandomEmail();
         const user = userData.validUser;
+
+        await allureId.step('Fill in valid registration form', async () => {
         await signUp.verifyNameField();
         await signUp.fillNameField(name);
         console.log(name);
@@ -44,16 +57,20 @@ test.describe('Check Sign In page', () => {
         await signUp.checkNewsletterCheckbox();
         await signUp.verifySignUpButton();
         await signUp.clickOnSignUpButton();
+        });
+
+        await allureId.step('Verify post registration behavior', async () => {
         await homePage.verifyURL();
         await homePage.verifyTitles();
         await header.verifyAccountLink();
+        });
     })
 
-    test('Check Sign Up with empty fields', async () => {
+    test('@regression Check Sign Up with empty fields', async () => {
         await signUp.verifyThatSignUpButtonIsDisabled();
     })
 
-    test('Check Sign Up with dupe email', async () => {
+    test('@smoke Check Sign Up with dupe email', async () => {
         const dublicateUser = userData.dublicateUser;
         await signUp.fillNameField(dublicateUser.name);
         await signUp.fillEmailField(dublicateUser.email);
@@ -64,7 +81,7 @@ test.describe('Check Sign In page', () => {
         await signUp.verifyDupeEmail();
     })
 
-    test('Check Sign Up with incorrect confirmation password', async () => {
+    test('@regression Check Sign Up with incorrect confirmation password', async () => {
         const invalidRepeatPassword = userData.invalidUser;
         await signUp.fillNameField(invalidRepeatPassword.name);
         await signUp.fillEmailField(invalidRepeatPassword.email);
@@ -75,7 +92,7 @@ test.describe('Check Sign In page', () => {
         await signUp.verifyIncorrectOrEmptyRepeatPassword();
     })
 
-    test('Check Sign Up with empty confirmation password', async () => {
+    test('@smoke Check Sign Up with empty confirmation password', async () => {
         const emptyRepeatPassword = userData.invalidUser;
         await signUp.fillNameField(emptyRepeatPassword.name);
         await signUp.fillEmailField(emptyRepeatPassword.email);
